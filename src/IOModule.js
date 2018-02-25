@@ -1,24 +1,29 @@
 import socketIO from 'socket.io';
 import Game from './game';
-
-const PORT = 7777;
+import { config } from '../package.json';
 
 export default class IOModule {
   constructor() {
-    this.io = socketIO(PORT);
+    this.io = socketIO(config.serverSocketPort);
+    this.sockets = {};
   }
 
   launch() {
     const { io } = this;
-    const newGame = new Game();
+    const game = new Game();
 
     io.on('connection', (socket) => {
-      socket.emit('playerJoined', 'A new player has joined the game');
-      newGame.addPlayer();
+      socket.on('submitName', (name) => {
+        game.addPlayer(name, socket.id);
+        this.sockets[socket.id] = { socket, name };
+        io.emit('playerJoined', `${name} has joined the game`);
+      });
 
       socket.on('disconnect', () => {
-        io.emit('playerExit', 'A player has left the game');
-      })
+        game.removePlayer(socket.id);
+        io.emit('playerExit', `${this.sockets[socket.id].name} has left the game`);
+        delete this.sockets[socket.id];
+      });
     });
   }
 }

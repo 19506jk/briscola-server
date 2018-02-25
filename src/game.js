@@ -1,5 +1,6 @@
-const _ = require('lodash');
-const deck = require('../assets/deck.json');
+import _ from 'lodash';
+import deck from '../assets/deck.json';
+import Player from './player';
 
 /**
  * Phases
@@ -12,7 +13,7 @@ const deck = require('../assets/deck.json');
 
 class Game {
   constructor() {
-    this.playerCount = 0;
+    this.players = Array(5).fill(null);
     this.phase = 0;
 
     this.currentRound = [];
@@ -21,7 +22,6 @@ class Game {
     this.caller = 0;
     this.playerHands = [];
     this.trump = null;
-    this.scores = [0, 0, 0, 0, 0];
     this.bid = null;
     this.passedBidPlayers = 0;
 
@@ -38,12 +38,14 @@ class Game {
     this.deck = _.shuffle(cards);
   }
 
-  addPlayer() {
-    this.playerCount += 1;
+  addPlayer(name, id) {
+    const emptyIndex = _.findIndex(this.players, null);
+    this.players[emptyIndex] = new Player(name, id);
   }
 
-  removePlayer() {
-    this.playerCount -= 1;
+  removePlayer(id) {
+    const index = _.findIndex(this.players, { id });
+    this.players[index] = null;
   }
 
   getCards() {
@@ -72,6 +74,7 @@ class Game {
     let largest = this.currentRound.shift();
     let leadingSuit = largest.info.suit;
     let { point } = largest.info;
+    const score = Array(5).fill(0);
 
     this.currentRound.forEach((card) => {
       const cardValue = card.info.value;
@@ -99,9 +102,15 @@ class Game {
       point += card.info.point;
     });
 
-    this.scores[largest.player - 1] += point;
+    score[largest.player - 1] += point;
     this.currentRound = [];
     return largest;
+  }
+
+  _updateScore(score) {
+    for (let i = 0; i < 5; i += 1) {
+      this.players[i].score += score[i];
+    }
   }
 
   submitBid(bid) {
