@@ -16,5 +16,4 @@ script:
   - npm run report-coverage
 
 env:
-  - CI=true
-  - CODECOV_TOKEN="44ada813-9ce4-48b9-a122-512cf7a99c2e"
+  - CODECOV_TOKEN="1063b2a2-6099-41d7-9161-6a13fe6011d8"
