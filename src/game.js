@@ -96,6 +96,7 @@ class Game {
     });
 
     this.scores[largest.player - 1] += point;
+    this.currentRound = [];
     return largest;
   }
 

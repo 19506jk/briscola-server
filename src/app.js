@@ -4,10 +4,17 @@ import IOModule from './IOModule';
 const app = Express();
 const socketIO = new IOModule();
 
+// eslint-disable-next-line no-console
+const server = app.listen(8080, () => console.log('server listening on port 8080'));
+
 app.get('/', (req, res) => {
   res.send('Briscola server is running!');
 });
 
-// eslint-disable-next-line no-console
-app.listen(8080, () => console.log('Server listening on port 8080'));
 socketIO.launch();
+
+export function close() {
+  // eslint-disable-next-line no-console
+  console.log('server is shutting down');
+  server.close();
+}

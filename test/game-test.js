@@ -1,10 +1,68 @@
-const assert = require('assert');
-const Game = require('../src/game.js');
+import assert from 'assert';
+import Game from '../src/game';
 
 describe('Game', () => {
+  let game;
+  beforeEach(() => {
+    game = new Game();
+  });
+
   describe('#getRoundResult()', () => {
+    it('should reset currentRound after getting round result', () => {
+      game.playCard({
+        player: 1,
+        info: { suit: 'A', point: 1, value: 1 },
+      });
+      game.playCard({
+        player: 2,
+        info: { suit: 'B', point: 2, value: 5 },
+      });
+      game.playCard({
+        player: 3,
+        info: { suit: 'C', point: 3, value: 7 },
+      });
+      game.playCard({
+        player: 4,
+        info: { suit: 'A', point: 4, value: 10 },
+      });
+      game.playCard({
+        player: 5,
+        info: { suit: 'A', point: 5, value: 11 },
+      });
+      game.trump = 'B';
+
+      game.getRoundResult();
+      assert.equal(game.currentRound.length, 0, 'Resets currentRound');
+    });
+
+    it('should calculate score correctly', () => {
+      game.playCard({
+        player: 1,
+        info: { suit: 'A', point: 1, value: 1 },
+      });
+      game.playCard({
+        player: 2,
+        info: { suit: 'B', point: 2, value: 5 },
+      });
+      game.playCard({
+        player: 3,
+        info: { suit: 'C', point: 3, value: 7 },
+      });
+      game.playCard({
+        player: 4,
+        info: { suit: 'A', point: 4, value: 10 },
+      });
+      game.playCard({
+        player: 5,
+        info: { suit: 'A', point: 5, value: 11 },
+      });
+      game.trump = 'B';
+
+      game.getRoundResult();
+      assert.deepEqual(game.scores, [0, 15, 0, 0, 0], 'Each player has the correct score');
+    });
+
     it('should return trump card when there is only one trump', () => {
-      const game = new Game();
       game.playCard({
         player: 1,
         info: { suit: 'A', point: 1, value: 1 },
@@ -31,11 +89,9 @@ describe('Game', () => {
         player: 2,
         info: { suit: 'B', point: 2, value: 5 },
       }, 'Player 2 is the winner of the round');
-      assert.deepEqual(game.scores, [0, 15, 0, 0, 0], 'Each player has the correct score');
     });
 
     it('should return largest card of the leading suit', () => {
-      const game = new Game();
       game.playCard({
         player: 1,
         info: { suit: 'A', point: 1, value: 1 },
@@ -65,7 +121,6 @@ describe('Game', () => {
     });
 
     it('should return largest trump', () => {
-      const game = new Game();
       game.playCard({
         player: 1,
         info: { suit: 'A', point: 1, value: 1 },
@@ -97,7 +152,6 @@ describe('Game', () => {
 
   describe('#setCalledCard()', () => {
     it('should set properties correctly', () => {
-      const game = new Game();
       const calledCard = { name: 'Ace', suit: 'Sun' };
       game.playerHands = [
         [{ name: 'Three', suit: 'Sword' }],
