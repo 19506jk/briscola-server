@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
 
 socketIO.launch();
 
-export function close() {
+export default function close() {
   // eslint-disable-next-line no-console
   console.log('server is shutting down');
   server.close();

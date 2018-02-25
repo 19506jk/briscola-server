@@ -1,7 +1,6 @@
 import http from 'http';
 import assert from 'assert';
 
-import '../src/app';
 import { close } from '../src/app';
 
 describe('Briscola Server App', () => {
