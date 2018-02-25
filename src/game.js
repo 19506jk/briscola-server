@@ -42,6 +42,10 @@ class Game {
     this.playerCount += 1;
   }
 
+  removePlayer() {
+    this.playerCount -= 1;
+  }
+
   getCards() {
     const cards = this.deck.splice(0, 8);
     this.playerHands.push(cards);

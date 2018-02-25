@@ -1,11 +1,11 @@
-import ioLib from 'socket.io';
+import socketIO from 'socket.io';
 import Game from './game';
 
 const PORT = 7777;
 
 export default class IOModule {
   constructor() {
-    this.io = ioLib(PORT);
+    this.io = socketIO(PORT);
   }
 
   launch() {
@@ -15,6 +15,10 @@ export default class IOModule {
     io.on('connection', (socket) => {
       socket.emit('playerJoined', 'A new player has joined the game');
       newGame.addPlayer();
+
+      socket.on('disconnect', () => {
+        io.emit('playerExit', 'A player has left the game');
+      })
     });
   }
 }
