@@ -13,16 +13,64 @@ export default class IOModule {
     const game = new Game();
 
     io.on('connection', (socket) => {
+      let index;
+      let playerName;
+
       socket.on('submitName', (name) => {
-        game.addPlayer(name, socket.id);
-        this.sockets[socket.id] = { socket, name };
+        index = game.addPlayer(name, id);
+        playerName = name;
+        this.sockets[index] = socket;
         io.emit('playerJoined', `${name} has joined the game`);
       });
 
       socket.on('disconnect', () => {
-        game.removePlayer(socket.id);
-        io.emit('playerExit', `${this.sockets[socket.id].name} has left the game`);
-        delete this.sockets[socket.id];
+        game.removePlayer(index);
+        io.emit('playerExit', `${playerName} has left the game`);
+        this.sockets[index] = null;
+      });
+
+      socket.on('readyStatus', (ready) => {
+        game.setReady(index, ready);
+        io.emit('playerReadyStatus', { playerName, ready });
+        if (game.playersReady()) {
+          const hand = game.getCards(index);
+          socket.emit('setCards', hand);
+        }
+      });
+
+      socket.on('bid', (bid) => {
+        if (bid.passed) {
+          const callerIndex = game.submitBidPass();
+          io.emit('playerPassedBid', { player: playerName });
+
+          if (callerIndex > -1) {
+            io.emit('setCaller', { player: callerIndex, bid: game.getBid() });
+          }
+        } else {
+          io.emit('playerBid', { player: playerName, bid: bid.points })
+        }
+      });
+
+      socket.on('setCalledCard', (card) => {
+        game.setCalledCard(index, card);
+        io.emit('gameStarts', { player: game.getNextPlayer() });
+      });
+
+      socket.on('playCard', (card) => {
+        game.playCard({ player: index, card });
+        const nextPlayer = game.getNextPlayer();
+
+        if (nextPlayer === -1) {
+          const winner = game.getRoundResult();
+          const scores = game.getScores();
+          io.emit('roundResult', { player: winner, scores });
+
+          if (game.isGameOver()) {
+            io.emit('finalResult', game.getFinalResult());
+          }
+        } else {
+          io.emit('nextPlayer', nextPlayer);
+        }
       });
     });
   }

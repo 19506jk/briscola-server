@@ -16,14 +16,16 @@ class Game {
     this.players = Array(5).fill(null);
     this.phase = 0;
 
+    this.roundCount = 0;
     this.currentRound = [];
     this.largestBid = 0;
     this.calledCard = null;
-    this.caller = 0;
-    this.playerHands = [];
+    this.caller = -1;
+    this.guiltyPlayer = -1;
     this.trump = null;
-    this.bid = null;
+    this.bid = 0;
     this.passedBidPlayers = 0;
+    this.playerOrder = [0, 1, 2, 3, 4];
 
     this.init();
   }
@@ -38,24 +40,48 @@ class Game {
     this.deck = _.shuffle(cards);
   }
 
+  _rotateOrder(pos) {
+    const arr = [0, 1, 2, 3, 4];
+    const removed = arr.splice(0, pos);
+    arr.push(removed);
+    return arr;
+  }
+
+  _updateScore(score) {
+    for (let i = 0; i < 5; i += 1) {
+      this.players[i].score += score[i];
+    }
+  }
+
   addPlayer(name, id) {
     const emptyIndex = _.findIndex(this.players, null);
     this.players[emptyIndex] = new Player(name, id);
+    return emptyIndex;
   }
 
-  removePlayer(id) {
-    const index = _.findIndex(this.players, { id });
+  removePlayer(index) {
     this.players[index] = null;
   }
 
-  getCards() {
+  getCards(index) {
     const cards = this.deck.splice(0, 8);
-    this.playerHands.push(cards);
+    this.players[index].cards = cards;
+    if (_.find(cards, { name: 'Two', suit: 'Feathers' })) {
+      this._rotateOrder(index);
+    }
     return cards;
   }
 
   playCard(cardInfo) {
     this.currentRound.push(cardInfo);
+  }
+
+  setReady(status, index) {
+    this.players[index].status = status;
+  }
+
+  playersReady() {
+    return _.findIndex(this.players, { ready: false }) === -1;
   }
 
   setCalledCard(player, card) {
@@ -64,10 +90,17 @@ class Game {
     this.caller = player;
 
     for (let i = 0; i < 5; i += 1) {
-      if (_.find(this.playerHands[i], { name: card.name, suit: card.suit })) {
+      if (_.find(this.players[i].cards, { name: card.name, suit: card.suit })) {
         this.guiltyPlayer = i;
       }
     }
+  }
+
+  getNextPlayer() {
+    if (this.playerOrder.length > 0) {
+      return this.playerOrder.shift();
+    }
+    return -1;
   }
 
   getRoundResult() {
@@ -107,24 +140,40 @@ class Game {
     return largest;
   }
 
-  _updateScore(score) {
-    for (let i = 0; i < 5; i += 1) {
-      this.players[i].score += score[i];
-    }
-  }
-
   submitBid(bid) {
-    if (!this.bid || bid.amount > this.bid.amount) {
-      this.bid = bid;
-    }
+    this.bid = Math.max(bid, this.bid);
   }
 
-  submitBidPass() {
+  submitBidPass(index) {
     this.passedBidPlayers += 1;
+    this.players[index].passed = true;
+    if (this.passedBidPlayers === 4) {
+      return _.findIndex(this.players, { passed: false });
+    }
+    return -1;
+  }
+
+  getBid() {
+    return this.bid;
   }
 
   getScores() {
     return this.scores;
+  }
+
+  isGameOver() {
+    return this.roundCount === 5;
+  }
+
+  getFinalResult() {
+    const callerPoints = this.scores.splice(this.caller, 1);
+    const guiltyPoints = this.scores.splice(this.guiltyPlayer, 1) + callerPoints;
+    const noneGuiltyPoints = this.scores.reduce((a, b) => a + b, 0);
+    return {
+      guiltyPoints,
+      noneGuiltyPoints,
+      bid: this.bid
+    }
   }
 }
 
