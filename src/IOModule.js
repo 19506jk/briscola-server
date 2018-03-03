@@ -5,7 +5,6 @@ import { config } from '../package.json';
 export default class IOModule {
   constructor() {
     this.io = socketIO(config.serverSocketPort);
-    this.sockets = {};
   }
 
   launch() {
@@ -19,14 +18,12 @@ export default class IOModule {
       socket.on('submitName', (name) => {
         index = game.addPlayer(name, id);
         playerName = name;
-        this.sockets[index] = socket;
         io.emit('playerJoined', `${name} has joined the game`);
       });
 
       socket.on('disconnect', () => {
         game.removePlayer(index);
         io.emit('playerExit', `${playerName} has left the game`);
-        this.sockets[index] = null;
       });
 
       socket.on('readyStatus', (ready) => {

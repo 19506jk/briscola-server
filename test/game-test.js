@@ -1,10 +1,50 @@
-import assert from 'assert';
+import { assert } from 'chai';
 import Game from '../src/game';
 
 describe('Game', () => {
   let game;
   beforeEach(() => {
     game = new Game();
+  });
+
+  describe('#constructor', () => {
+    it('should initialize the game correctly', () => {
+      assert.equal(game.deck.length, 40, 'the deck is set');
+      assert.deepEqual(game.players, [null, null, null, null, null], 'players array is set');
+    });
+  });
+
+  describe('#_rotateOrder', () => {
+    it('should rotate array correctly', () => {
+      const arr = game._rotateOrder(2);
+      assert.deepEqual(arr, [2, 3, 4, 0, 1]);
+    });
+  });
+
+  describe('#_updateScore', () => {
+    it('should update player scores with the given array', () => {
+      const arr = [1, 2, 3, 4, 5];
+      arr.forEach(() => game.addPlayer());
+      game._updateScore(arr);
+      assert.deepEqual(game.getScores(), arr);
+    });
+  });
+
+  describe('#addPlayer', () => {
+    it('should return the index of new player', () => {
+      const firstPlayerIndex = game.addPlayer();
+      const secondPlayerIndex = game.addPlayer();
+      assert.equal(firstPlayerIndex, 0);
+      assert.equal(secondPlayerIndex, 1);
+    });
+
+    it('should add player object correctly', () => {
+      game.addPlayer();
+      const player = game.players[0];
+
+      assert.equal(player.score, 0);
+      assert.isNull(player.cards);
+    });
   });
 
   describe('#getRoundResult()', () => {

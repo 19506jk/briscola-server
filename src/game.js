@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import deck from '../assets/deck.json';
-import Player from './player';
 
 /**
  * Phases
@@ -43,8 +42,7 @@ class Game {
   _rotateOrder(pos) {
     const arr = [0, 1, 2, 3, 4];
     const removed = arr.splice(0, pos);
-    arr.push(removed);
-    return arr;
+    return arr.concat(removed);
   }
 
   _updateScore(score) {
@@ -53,9 +51,12 @@ class Game {
     }
   }
 
-  addPlayer(name, id) {
-    const emptyIndex = _.findIndex(this.players, null);
-    this.players[emptyIndex] = new Player(name, id);
+  addPlayer() {
+    const emptyIndex = this.players.findIndex(element => _.isNull(element));
+    this.players[emptyIndex] = {
+      score: 0,
+      cards: null
+    };
     return emptyIndex;
   }
 
@@ -158,7 +159,7 @@ class Game {
   }
 
   getScores() {
-    return this.scores;
+    return this.players.map(player => player.score);
   }
 
   isGameOver() {
