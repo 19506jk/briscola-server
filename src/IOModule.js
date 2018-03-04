@@ -23,6 +23,9 @@ export default class IOModule {
 
       socket.on('disconnect', () => {
         game.removePlayer(index);
+        if (_.isNil(playerName)) {
+          playerName = 'A player';
+        }
         io.emit('playerExit', `${playerName} has left the game`);
       });
 
@@ -70,5 +73,9 @@ export default class IOModule {
         }
       });
     });
+  }
+
+  close() {
+    this.io.close();
   }
 }
