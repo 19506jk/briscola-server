@@ -5,24 +5,44 @@ import Game from './game';
 export default class IOModule {
   constructor(port) {
     this.io = socketIO(port);
+    this.game = new Game();
+    this.sockets = Array(5).fill(null);
+  }
+
+  close() {
+    this.io.close();
+  }
+
+  resetGame() {
+    this.game = new Game();
+  }
+
+  _distributeCards() {
+    for (let i = 0; i < 5; i += 1) {
+      const hand = this.game.getCards(i);
+      this.sockets[i].emit('setCards', hand);
+    }
   }
 
   launch() {
     const { io } = this;
-    const game = new Game();
 
     io.on('connection', (socket) => {
       let index;
       let playerName;
 
       socket.on('submitName', (name) => {
-        index = game.addPlayer();
+        index = this.game.addPlayer(name);
         playerName = name;
+        this.sockets[index] = socket;
         io.emit('playerJoined', `${name} has joined the game`);
       });
 
       socket.on('disconnect', () => {
-        game.removePlayer(index);
+        if (index) {
+          this.game.removePlayer(index);
+        }
+
         if (_.isNil(playerName)) {
           playerName = 'A player';
         }
@@ -30,52 +50,50 @@ export default class IOModule {
       });
 
       socket.on('readyStatus', (ready) => {
-        game.setReadyStatus(index, ready);
+        this.game.setReadyStatus(index, ready);
         io.emit('playerReadyStatus', { playerName, ready });
-        if (game.playersReady()) {
-          const hand = game.getCards(index);
-          socket.emit('setCards', hand);
+        if (this.game.playersReady()) {
+          this._distributeCards();
         }
       });
 
       socket.on('bid', (bid) => {
         if (bid.passed) {
-          const callerIndex = game.submitBidPass();
           io.emit('playerPassedBid', { player: playerName });
-
-          if (callerIndex > -1) {
-            io.emit('setCaller', { player: callerIndex, bid: game.getBid() });
-          }
         } else {
           io.emit('playerBid', { player: playerName, bid: bid.points });
+        }
+
+        this.game.submitBid(bid, index);
+        const caller = this.game.getCaller();
+        if (caller) {
+          io.emit('setCaller', { name: caller.name, index: caller.index, bid: this.game.getBid() });
         }
       });
 
       socket.on('setCalledCard', (card) => {
-        game.setCalledCard(index, card);
-        io.emit('gameStarts', { player: game.getNextPlayer() });
+        this.game.setCalledCard(index, card);
+        io.emit('gameStarts', { player: this.game.getNextPlayer() });
       });
 
       socket.on('playCard', (card) => {
-        game.playCard({ player: index, card });
-        const nextPlayer = game.getNextPlayer();
+        card.playerName = playerName;
+        card.playerIndex = index;
+        this.game.playCard(card);
+        const nextPlayer = this.game.getNextPlayer();
 
         if (nextPlayer === -1) {
-          const winner = game.getRoundResult();
-          const scores = game.getScores();
-          io.emit('roundResult', { player: winner, scores });
+          const winner = this.game.getRoundResult();
+          const scores = this.game.getScores();
+          io.emit('roundResult', { winner, scores });
 
-          if (game.isGameOver()) {
-            io.emit('finalResult', game.getFinalResult());
+          if (this.game.isGameOver()) {
+            io.emit('finalResult', this.game.getFinalResult());
           }
         } else {
           io.emit('nextPlayer', nextPlayer);
         }
       });
     });
-  }
-
-  close() {
-    this.io.close();
   }
 }

@@ -61,9 +61,10 @@ class Game {
     }
   }
 
-  addPlayer() {
+  addPlayer(name) {
     const emptyIndex = _.findIndex(this.players, { occupied: false });
     this.players[emptyIndex].occupied = true;
+    this.players[emptyIndex].name = name;
     return emptyIndex;
   }
 
@@ -113,16 +114,16 @@ class Game {
 
   getRoundResult() {
     let largest = this.currentRound.shift();
-    let leadingSuit = largest.info.suit;
-    let { point } = largest.info;
+    let leadingSuit = largest.suit;
+    let point = largest.rank.point;
     const score = Array(5).fill(0);
 
     this.currentRound.forEach((card) => {
-      const cardValue = card.info.value;
-      const cardSuit = card.info.suit;
+      const cardValue = card.rank.value;
+      const cardSuit = card.suit;
       const { trump } = this;
-      const largestValue = largest.info.value;
-      const largestTrump = largest.info.trump;
+      const largestValue = largest.rank.value;
+      const largestTrump = largest.trump;
 
       /**
        * Largest card should be replaced in the following cases:
@@ -140,26 +141,22 @@ class Game {
         largest = card;
         leadingSuit = trump;
       }
-      point += card.info.point;
+      point += card.rank.point;
     });
 
-    score[largest.player] += point;
+    score[largest.playerIndex] += point;
     this._updateScore(score);
     this.currentRound = [];
     return largest;
   }
 
-  submitBid(bid) {
-    this.bid = Math.max(bid, this.bid);
-  }
-
-  submitBidPass(index) {
-    this.passedBidPlayers += 1;
-    this.players[index].passed = true;
-    if (this.passedBidPlayers === 4) {
-      return _.findIndex(this.players, { passed: false });
+  submitBid(bid, index) {
+    if (bid.passed) {
+      this.passedBidPlayers += 1;
+      this.players[index].passed = true;
+    } else {
+      this.bid = Math.max(bid.points, this.bid);
     }
-    return -1;
   }
 
   getBid() {
@@ -168,6 +165,16 @@ class Game {
 
   getScores() {
     return this.players.map(player => player.score);
+  }
+
+  getCaller() {
+    if (this.passedBidPlayers === 4) {
+      const index = _.findIndex(this.players, { passed: false });
+      if (index > -1) {
+        return { name: this.players[index].name, index };
+      }
+    }
+    return null;
   }
 
   isGameOver() {
