@@ -1,9 +1,9 @@
 import { assert } from 'chai';
 import io from 'socket.io-client';
 import IOModule from '../src/IOModule';
-import { config } from '../package.json';
 
-const socketURL = `http://localhost:${config.serverSocketPort}`;
+const port = 7777;
+const socketURL = `http://localhost:7777${port}`;
 
 describe('IOModule', () => {
   let subject;
@@ -14,7 +14,7 @@ describe('IOModule', () => {
   let player5;
 
   before(() => {
-    subject = new IOModule();
+    subject = new IOModule(port);
     subject.launch();
   });
 

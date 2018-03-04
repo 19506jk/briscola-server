@@ -12,4 +12,6 @@ app.get('/', (req, res) => {
   res.send('Briscola server is running!');
 });
 
-socketIO.launch();
+socketIO.launch(config.serverPort);
+
+export default socketIO;

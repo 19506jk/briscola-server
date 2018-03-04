@@ -1,11 +1,10 @@
 import socketIO from 'socket.io';
 import _ from 'lodash';
 import Game from './game';
-import { config } from '../package.json';
 
 export default class IOModule {
-  constructor() {
-    this.io = socketIO(config.serverSocketPort);
+  constructor(port) {
+    this.io = socketIO(port);
   }
 
   launch() {
