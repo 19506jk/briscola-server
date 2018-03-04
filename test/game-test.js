@@ -142,19 +142,39 @@ describe('Game', () => {
 
   describe('#getRoundResult()', () => {
     const playSet1 = () => {
-      game.playCard({ playerIndex: 0, playerName: 'Player0', suit: 'A', rank: { point: 1, value: 1, }, });
-      game.playCard({ playerIndex: 1, playerName: 'Player1', suit: 'B', rank: { point: 2, value: 5, }, });
-      game.playCard({ playerIndex: 2, playerName: 'Player2', suit: 'C', rank: { point: 3, value: 7, }, });
-      game.playCard({ playerIndex: 3, playerName: 'Player3', suit: 'A', rank: { point: 4, value: 10, }, });
-      game.playCard({ playerIndex: 4, playerName: 'Player4', suit: 'A', rank: { point: 5, value: 11, }, });
+      game.playCard({
+        playerIndex: 0, playerName: 'Player0', suit: 'A', rank: { point: 1, value: 1 },
+      });
+      game.playCard({
+        playerIndex: 1, playerName: 'Player1', suit: 'B', rank: { point: 2, value: 5 },
+      });
+      game.playCard({
+        playerIndex: 2, playerName: 'Player2', suit: 'C', rank: { point: 3, value: 7 },
+      });
+      game.playCard({
+        playerIndex: 3, playerName: 'Player3', suit: 'A', rank: { point: 4, value: 10 },
+      });
+      game.playCard({
+        playerIndex: 4, playerName: 'Player4', suit: 'A', rank: { point: 5, value: 11 },
+      });
     };
 
     const playSet2 = () => {
-      game.playCard({ playerIndex: 0, playerName: 'Player0', suit: 'A', rank: { point: 1, value: 1, }, });
-      game.playCard({ playerIndex: 1, playerName: 'Player1', suit: 'C', rank: { point: 2, value: 5, }, });
-      game.playCard({ playerIndex: 2, playerName: 'Player2', suit: 'C', rank: { point: 3, value: 7, }, });
-      game.playCard({ playerIndex: 3, playerName: 'Player3', suit: 'A', rank: { point: 4, value: 10, }, });
-      game.playCard({ playerIndex: 4, playerName: 'Player4', suit: 'A', rank: { point: 5, value: 11, }, });
+      game.playCard({
+        playerIndex: 0, playerName: 'Player0', suit: 'A', rank: { point: 1, value: 1 },
+      });
+      game.playCard({
+        playerIndex: 1, playerName: 'Player1', suit: 'C', rank: { point: 2, value: 5 },
+      });
+      game.playCard({
+        playerIndex: 2, playerName: 'Player2', suit: 'C', rank: { point: 3, value: 7 },
+      });
+      game.playCard({
+        playerIndex: 3, playerName: 'Player3', suit: 'A', rank: { point: 4, value: 10 },
+      });
+      game.playCard({
+        playerIndex: 4, playerName: 'Player4', suit: 'A', rank: { point: 5, value: 11 },
+      });
     };
 
     it('should reset currentRound after getting round result', () => {
@@ -176,55 +196,51 @@ describe('Game', () => {
     });
 
     it('should return trump card when there is only one trump', () => {
+      const expected = {
+        playerIndex: 1,
+        playerName: 'Player1',
+        suit: 'B',
+        rank: {
+          point: 2,
+          value: 5,
+        },
+      };
       game.trump = 'B';
       playSet1();
 
-      assert.deepEqual(game.getRoundResult(),
-        {
-          playerIndex: 1,
-          playerName: 'Player1',
-          suit: 'B',
-          rank: {
-            point: 2,
-            value: 5,
-          },
-        },
-        'Player 1 is the winner of the round'
-      );
+      assert.deepEqual(game.getRoundResult(), expected, 'Player 1 is the winner of the round');
     });
 
     it('should return largest card of the leading suit', () => {
+      const expected = {
+        playerIndex: 4,
+        playerName: 'Player4',
+        suit: 'A',
+        rank: {
+          point: 5,
+          value: 11,
+        },
+      };
       game.trump = 'A';
       playSet2();
 
-      assert.deepEqual(game.getRoundResult(),
-        {
-          playerIndex: 4,
-          playerName: 'Player4',
-          suit: 'A',
-          rank: {
-            point: 5,
-            value: 11,
-          },
-        },
-        'Player 4 is the winner of the round');
+      assert.deepEqual(game.getRoundResult(), expected, 'Player 4 is the winner of the round');
     });
 
     it('should return largest trump', () => {
+      const expected = {
+        playerIndex: 4,
+        playerName: 'Player4',
+        suit: 'A',
+        rank: {
+          point: 5,
+          value: 11,
+        },
+      };
       game.trump = 'A';
       playSet2();
 
-      assert.deepEqual(game.getRoundResult(),
-        {
-          playerIndex: 4,
-          playerName: 'Player4',
-          suit: 'A',
-          rank: {
-            point: 5,
-            value: 11,
-          },
-        },
-        'Player 4 is the winner of the round');
+      assert.deepEqual(game.getRoundResult(), expected, 'Player 4 is the winner of the round');
     });
 
     it('should update the score of players', () => {
@@ -302,11 +318,11 @@ describe('Game', () => {
 
   describe('#getFinalResult', () => {
     it('should return correct final result', () => {
-      game.playCard({ playerIndex: 0, suit: 'A', rank: { point: 1, value: 1, }, });
-      game.playCard({ playerIndex: 1, suit: 'C', rank: { point: 2, value: 5, }, });
-      game.playCard({ playerIndex: 2, suit: 'C', rank: { point: 3, value: 7, }, });
-      game.playCard({ playerIndex: 3, suit: 'A', rank: { point: 4, value: 10, }, });
-      game.playCard({ playerIndex: 4, suit: 'A', rank: { point: 5, value: 11, }, });
+      game.playCard({ playerIndex: 0, suit: 'A', rank: { point: 1, value: 1 } });
+      game.playCard({ playerIndex: 1, suit: 'C', rank: { point: 2, value: 5 } });
+      game.playCard({ playerIndex: 2, suit: 'C', rank: { point: 3, value: 7 } });
+      game.playCard({ playerIndex: 3, suit: 'A', rank: { point: 4, value: 10 } });
+      game.playCard({ playerIndex: 4, suit: 'A', rank: { point: 5, value: 11 } });
       game.trump = 'A';
       game.caller = 4;
       game.guiltyPlayer = 0;

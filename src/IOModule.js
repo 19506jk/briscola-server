@@ -77,9 +77,7 @@ export default class IOModule {
       });
 
       socket.on('playCard', (card) => {
-        card.playerName = playerName;
-        card.playerIndex = index;
-        this.game.playCard(card);
+        this.game.playCard(_.merge(card, { playerIndex: index, playerName }));
         const nextPlayer = this.game.getNextPlayer();
 
         if (nextPlayer === -1) {

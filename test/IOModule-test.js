@@ -232,23 +232,23 @@ describe('IOModule', () => {
         });
         player1.emit('submitName', 'Player1');
         player1.emit('setCalledCard', { name: 'Ace', suit: 'A' });
-        player1.emit('playCard', { suit: 'A', rank: { point: 1, value: 1, }, });
+        player1.emit('playCard', { suit: 'A', rank: { point: 1, value: 1 } });
       });
       player2.on('connect', () => {
         player2.emit('submitName', 'Player2');
-        player2.emit('playCard', { suit: 'C', rank: { point: 2, value: 5 }, });
+        player2.emit('playCard', { suit: 'C', rank: { point: 2, value: 5 } });
       });
       player3.on('connect', () => {
         player3.emit('submitName', 'Player3');
-        player3.emit('playCard', { suit: 'C', rank: { point: 3, value: 7 }, });
+        player3.emit('playCard', { suit: 'C', rank: { point: 3, value: 7 } });
       });
       player4.on('connect', () => {
         player4.emit('submitName', 'Player4');
-        player4.emit('playCard', { suit: 'A', rank: { point: 4, value: 10 }, });
+        player4.emit('playCard', { suit: 'A', rank: { point: 4, value: 10 } });
       });
       player5.on('connect', () => {
         player5.emit('submitName', 'Player5');
-        player5.emit('playCard', { suit: 'A', rank: { point: 5, value: 11, }, });
+        player5.emit('playCard', { suit: 'A', rank: { point: 5, value: 11 } });
       });
     });
 
@@ -257,13 +257,13 @@ describe('IOModule', () => {
 
       player1.on('connect', () => {
         // Guilty player
-        const card = { suit: 'A', rank: { point: 1, value: 1, name: 'A' }};
+        const card = { suit: 'A', rank: { point: 1, value: 1, name: 'A' } };
         player1.on('finalResult', (data) => {
           assert.deepEqual(data, {
             guiltyPoints: 0,
             nonGuiltyPoints: 15,
             bid: 10,
-          })
+          });
           done();
         });
         subject.game.players[0].cards = [card];
@@ -273,7 +273,7 @@ describe('IOModule', () => {
       });
       player2.on('connect', () => {
         // Caller
-        const card = { suit: 'C', rank: { point: 2, value: 5, name: 'B' }};
+        const card = { suit: 'C', rank: { point: 2, value: 5, name: 'B' } };
         subject.game.players[1].cards = [card];
         player2.emit('submitName', 'Player2');
         player2.emit('bid', { passed: false, points: 10 });
@@ -281,21 +281,21 @@ describe('IOModule', () => {
         player2.emit('playCard', card);
       });
       player3.on('connect', () => {
-        const card = { suit: 'C', rank: { point: 3, value: 7, name: 'C' }};
+        const card = { suit: 'C', rank: { point: 3, value: 7, name: 'C' } };
         subject.game.players[2].cards = [card];
         player3.emit('submitName', 'Player3');
         player3.emit('playCard', card);
         player3.emit('bid', { passed: true });
       });
       player4.on('connect', () => {
-        const card = { suit: 'A', rank: { point: 4, value: 10, name: 'Z' }};
+        const card = { suit: 'A', rank: { point: 4, value: 10, name: 'Z' } };
         subject.game.players[3].cards = [card];
         player4.emit('submitName', 'Player4');
         player4.emit('playCard', card);
         player4.emit('bid', { passed: true });
       });
       player5.on('connect', () => {
-        const card = { suit: 'A', rank: { point: 5, value: 11, name: 'D' }};
+        const card = { suit: 'A', rank: { point: 5, value: 11, name: 'D' } };
         subject.game.players[4].cards = [card];
         player5.emit('submitName', 'Player5');
         player5.emit('playCard', card);
