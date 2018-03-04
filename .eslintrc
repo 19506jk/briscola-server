@@ -12,6 +12,7 @@
       "error",
       "global"
     ],
-    "curly": "warn"
+    "curly": "warn",
+    "no-underscore-dangle": "off"
   }
 }

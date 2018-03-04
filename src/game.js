@@ -44,7 +44,7 @@ class Game {
         cards: null,
         occupied: false,
         ready: false,
-        passed: false
+        passed: false,
       });
     });
   }
@@ -180,10 +180,10 @@ class Game {
     const guiltyPlayerPoints = scores.splice(this.guiltyPlayer, 1)[0];
     const nonGuiltyPoints = scores.reduce((a, b) => a + b, 0);
     return {
-      'guiltyPoints': callerPoints + guiltyPlayerPoints,
-      'nonGuiltyPoints': nonGuiltyPoints,
-      bid: this.bid
-    }
+      guiltyPoints: callerPoints + guiltyPlayerPoints,
+      nonGuiltyPoints,
+      bid: this.bid,
+    };
   }
 }
 

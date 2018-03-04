@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import IOModule from '../src/IOModule';
 import { config } from '../package.json';
 
-const socketURL = 'http://localhost:' + config.serverSocketPort;
+const socketURL = `http://localhost:${config.serverSocketPort}`;
 
 describe('IOModule', () => {
   let subject;
@@ -19,11 +19,11 @@ describe('IOModule', () => {
   });
 
   beforeEach(() => {
-    player1 = io.connect(socketURL, { 'forceNew': true });
-    player2 = io.connect(socketURL, { 'forceNew': true });
-    player3 = io.connect(socketURL, { 'forceNew': true });
-    player4 = io.connect(socketURL, { 'forceNew': true });
-    player5 = io.connect(socketURL, { 'forceNew': true });
+    player1 = io.connect(socketURL, { forceNew: true });
+    player2 = io.connect(socketURL, { forceNew: true });
+    player3 = io.connect(socketURL, { forceNew: true });
+    player4 = io.connect(socketURL, { forceNew: true });
+    player5 = io.connect(socketURL, { forceNew: true });
   });
 
   afterEach(() => {
@@ -36,7 +36,6 @@ describe('IOModule', () => {
 
   describe('on socket submitName', () => {
     it('should broadcast the name of new player', () => {
-
       player1.on('connect', () => {
         player1.emit('submitName', 'Foo');
       });

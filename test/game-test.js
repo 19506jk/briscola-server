@@ -16,14 +16,14 @@ describe('Game', () => {
         cards: null,
         occupied: false,
         ready: false,
-        passed: false
+        passed: false,
       }, 'player object is set correctly');
     });
   });
 
   describe('#_rotateOrder', () => {
     it('should rotate array correctly', () => {
-      const arr = game._rotateOrder(2);
+      game._rotateOrder(2);
       assert.deepEqual(game.playerOrder, [2, 3, 4, 0, 1]);
     });
   });
@@ -365,7 +365,7 @@ describe('Game', () => {
       assert.deepEqual(result, {
         guiltyPoints: 15,
         nonGuiltyPoints: 0,
-        bid: 20
+        bid: 20,
       });
     });
   });

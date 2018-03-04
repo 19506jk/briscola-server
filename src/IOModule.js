@@ -1,4 +1,5 @@
 import socketIO from 'socket.io';
+import _ from 'lodash';
 import Game from './game';
 import { config } from '../package.json';
 
@@ -16,7 +17,7 @@ export default class IOModule {
       let playerName;
 
       socket.on('submitName', (name) => {
-        index = game.addPlayer(name, id);
+        index = game.addPlayer();
         playerName = name;
         io.emit('playerJoined', `${name} has joined the game`);
       });
@@ -47,7 +48,7 @@ export default class IOModule {
             io.emit('setCaller', { player: callerIndex, bid: game.getBid() });
           }
         } else {
-          io.emit('playerBid', { player: playerName, bid: bid.points })
+          io.emit('playerBid', { player: playerName, bid: bid.points });
         }
       });
 
