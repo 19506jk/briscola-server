@@ -15,7 +15,8 @@ describe('Game', () => {
         score: 0,
         cards: null,
         occupied: false,
-        ready: false
+        ready: false,
+        passed: false
       }, 'player object is set correctly');
     });
   });
@@ -94,6 +95,48 @@ describe('Game', () => {
     it('should set the player at index to correct ready status', () => {
       game.setReadyStatus(0, true);
       assert.ok(game.players[0].ready);
+    });
+  });
+
+  describe('#playersReady', () => {
+    it('should return false when at least one player is not ready', () => {
+      assert.isNotOk(game.playersReady(), 'none of the players is ready');
+
+      game.setReadyStatus(0, true);
+      game.setReadyStatus(1, true);
+      game.setReadyStatus(2, true);
+      game.setReadyStatus(3, true);
+      game.setReadyStatus(4, true);
+      assert.isOk(game.playersReady(), 'all the players are ready');
+    });
+  });
+
+  describe('#setCalledCard()', () => {
+    it('should set properties correctly', () => {
+      const calledCard = { name: 'Ace', suit: 'Sun' };
+      game.players[0].cards = [{ rank: { name: 'Three' }, suit: 'Sword' }];
+      game.players[1].cards = [{ rank: { name: 'Ace' }, suit: 'Sun' }];
+      game.players[2].cards = [{ rank: { name: 'Five' }, suit: 'Cup' }];
+      game.players[3].cards = [{ rank: { name: 'Four' }, suit: 'Feather' }];
+      game.players[4].cards = [{ rank: { name: 'King' }, suit: 'Sword' }];
+      game.setCalledCard(0, calledCard);
+
+      assert.equal(game.calledCard, calledCard, 'called card is set');
+      assert.equal(game.trump, calledCard.suit, 'trump is set');
+      assert.equal(game.caller, 0, 'caller is set');
+      assert.equal(game.guiltyPlayer, 1, 'guilty player is set');
+    });
+  });
+
+  describe('#getNextPlayer', () => {
+    it('should return the next player for playing card', () => {
+      game.playerOrder = [4, 5, 0, 1, 2];
+      assert.equal(game.getNextPlayer(), 4, 'next player is 4');
+    });
+
+    it('should return correct number when there is no next player available', () => {
+      game.playerOrder = [];
+      assert.equal(game.getNextPlayer(), -1);
     });
   });
 
@@ -242,20 +285,30 @@ describe('Game', () => {
     });
   });
 
-  describe('#setCalledCard()', () => {
-    it('should set properties correctly', () => {
-      const calledCard = { name: 'Ace', suit: 'Sun' };
-      game.players[0].cards = [{ rank: { name: 'Three' }, suit: 'Sword' }];
-      game.players[1].cards = [{ rank: { name: 'Ace' }, suit: 'Sun' }];
-      game.players[2].cards = [{ rank: {name: 'Five' }, suit: 'Cup' }];
-      game.players[3].cards = [{ rank: { name: 'Four' }, suit: 'Feather' }];
-      game.players[4].cards = [{ rank: { name: 'King' }, suit: 'Sword' }];
-      game.setCalledCard(0, calledCard);
+  describe('#submitBid', () => {
+    it('should set the larger number as the highest bid', () => {
+      game.submitBid(10);
+      assert.equal(game.bid, 10, 'bid is set to 10');
 
-      assert.equal(game.calledCard, calledCard, 'called card is set');
-      assert.equal(game.trump, calledCard.suit, 'trump is set');
-      assert.equal(game.caller, 0, 'caller is set');
-      assert.equal(game.guiltyPlayer, 1, 'guilty player is set');
+      game.submitBid(20);
+      assert.equal(game.bid, 20, 'bid is set to 20');
+    });
+  });
+
+  describe('#submitBidPass', () => {
+    it('should set player at index to pass the bid', () => {
+      const result = game.submitBidPass(3);
+      assert.ok(game.players[3].passed, 'player 3 passes the bid');
+      assert.equal(result, -1, 'submitBidPass returns -1 when there are more than one player still bidding');
+      assert.equal(game.passedBidPlayers, 1, 'passedBidPlayers increments by 1');
+    });
+
+    it.only('should return index of the player who won the bid', () => {
+      game.submitBidPass(0);
+      game.submitBidPass(1);
+      game.submitBidPass(2);
+      const result = game.submitBidPass(3);
+      assert.equal(result, 4, 'player 4 becomes the caller');
     });
   });
 });

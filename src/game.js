@@ -43,7 +43,8 @@ class Game {
         score: 0,
         cards: null,
         occupied: false,
-        ready: false
+        ready: false,
+        passed: false
       });
     });
   }
@@ -83,7 +84,7 @@ class Game {
     this.currentRound.push(cardInfo);
   }
 
-  setReadyStatus(status, index) {
+  setReadyStatus(index, status) {
     this.players[index].ready = status;
   }
 
