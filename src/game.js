@@ -175,12 +175,13 @@ class Game {
   }
 
   getFinalResult() {
-    const callerPoints = this.scores.splice(this.caller, 1);
-    const guiltyPoints = this.scores.splice(this.guiltyPlayer, 1) + callerPoints;
-    const noneGuiltyPoints = this.scores.reduce((a, b) => a + b, 0);
+    const scores = this.getScores();
+    const callerPoints = scores.splice(this.caller, 1)[0];
+    const guiltyPlayerPoints = scores.splice(this.guiltyPlayer, 1)[0];
+    const nonGuiltyPoints = scores.reduce((a, b) => a + b, 0);
     return {
-      guiltyPoints,
-      noneGuiltyPoints,
+      'guiltyPoints': callerPoints + guiltyPlayerPoints,
+      'nonGuiltyPoints': nonGuiltyPoints,
       bid: this.bid
     }
   }

@@ -257,31 +257,31 @@ describe('Game', () => {
 
     it('should return largest trump', () => {
       game.playCard({
-        player: 1,
+        player: 0,
         info: { suit: 'A', point: 1, value: 1 },
       });
       game.playCard({
-        player: 2,
+        player: 1,
         info: { suit: 'C', point: 2, value: 5 },
       });
       game.playCard({
-        player: 3,
+        player: 2,
         info: { suit: 'C', point: 3, value: 7 },
       });
       game.playCard({
-        player: 4,
+        player: 3,
         info: { suit: 'A', point: 4, value: 10 },
       });
       game.playCard({
-        player: 5,
+        player: 4,
         info: { suit: 'A', point: 5, value: 11 },
       });
       game.trump = 'A';
 
       assert.deepEqual(game.getRoundResult(), {
-        player: 5,
+        player: 4,
         info: { suit: 'A', point: 5, value: 11 },
-      }, 'Player 5 is the winner of the round');
+      }, 'Player 4 is the winner of the round');
     });
   });
 
@@ -303,12 +303,70 @@ describe('Game', () => {
       assert.equal(game.passedBidPlayers, 1, 'passedBidPlayers increments by 1');
     });
 
-    it.only('should return index of the player who won the bid', () => {
+    it('should return index of the player who won the bid', () => {
       game.submitBidPass(0);
       game.submitBidPass(1);
       game.submitBidPass(2);
       const result = game.submitBidPass(3);
       assert.equal(result, 4, 'player 4 becomes the caller');
+    });
+  });
+
+  describe('#getBid', () => {
+    it('should return the current highest bid', () => {
+      game.submitBid(20);
+      assert.equal(game.getBid(), 20, '20 is the current bid');
+    });
+  });
+
+  describe('#getScores', () => {
+    it('should return the cumulative score of all the players', () => {
+      assert.deepEqual(game.getScores(), [0, 0, 0, 0, 0], 'all the playersh should have the same score initially');
+    });
+  });
+
+  describe('#isGameOver', () => {
+    it('should return true if the game has played for five rounds', () => {
+      assert.isNotOk(game.isGameOver(), 'game is not over yet');
+      game.roundCount = 5;
+      assert.ok(game.isGameOver(), 'game is over');
+    });
+  });
+
+  describe('#getFinalResult', () => {
+    it('should return correct final result', () => {
+      game.playCard({
+        player: 0,
+        info: { suit: 'A', point: 1, value: 1 },
+      });
+      game.playCard({
+        player: 1,
+        info: { suit: 'C', point: 2, value: 5 },
+      });
+      game.playCard({
+        player: 2,
+        info: { suit: 'C', point: 3, value: 7 },
+      });
+      game.playCard({
+        player: 3,
+        info: { suit: 'A', point: 4, value: 10 },
+      });
+      game.playCard({
+        player: 4,
+        info: { suit: 'A', point: 5, value: 11 },
+      });
+      game.trump = 'A';
+      game.caller = 4;
+      game.guiltyPlayer = 0;
+      game.getRoundResult();
+      game.bid = 20;
+
+      const result = game.getFinalResult();
+      assert.deepEqual(result, {
+        guiltyPoints: 15,
+        nonGuiltyPoints: 0,
+        bid: 20
+      });
     });
   });
 });
