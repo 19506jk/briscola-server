@@ -27,7 +27,7 @@ export default class IOModule {
       });
 
       socket.on('readyStatus', (ready) => {
-        game.setReady(index, ready);
+        game.setReadyStatus(index, ready);
         io.emit('playerReadyStatus', { playerName, ready });
         if (game.playersReady()) {
           const hand = game.getCards(index);

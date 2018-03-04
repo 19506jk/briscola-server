@@ -12,7 +12,7 @@ import deck from '../assets/deck.json';
 
 class Game {
   constructor() {
-    this.players = Array(5).fill(null);
+    this.players = [];
     this.phase = 0;
 
     this.roundCount = 0;
@@ -37,12 +37,21 @@ class Game {
       });
     });
     this.deck = _.shuffle(cards);
+
+    this.playerOrder.forEach(() => {
+      this.players.push({
+        score: 0,
+        cards: null,
+        occupied: false,
+        ready: false
+      });
+    });
   }
 
   _rotateOrder(pos) {
     const arr = [0, 1, 2, 3, 4];
     const removed = arr.splice(0, pos);
-    return arr.concat(removed);
+    this.playerOrder = arr.concat(removed);
   }
 
   _updateScore(score) {
@@ -52,22 +61,19 @@ class Game {
   }
 
   addPlayer() {
-    const emptyIndex = this.players.findIndex(element => _.isNull(element));
-    this.players[emptyIndex] = {
-      score: 0,
-      cards: null
-    };
+    const emptyIndex = _.findIndex(this.players, { occupied: false });
+    this.players[emptyIndex].occupied = true;
     return emptyIndex;
   }
 
   removePlayer(index) {
-    this.players[index] = null;
+    this.players[index].occupied = false;
   }
 
   getCards(index) {
     const cards = this.deck.splice(0, 8);
     this.players[index].cards = cards;
-    if (_.find(cards, { name: 'Two', suit: 'Feathers' })) {
+    if (_.find(cards, { suit: 'Feathers', rank: { name: 'Two' } })) {
       this._rotateOrder(index);
     }
     return cards;
@@ -77,8 +83,8 @@ class Game {
     this.currentRound.push(cardInfo);
   }
 
-  setReady(status, index) {
-    this.players[index].status = status;
+  setReadyStatus(status, index) {
+    this.players[index].ready = status;
   }
 
   playersReady() {
@@ -91,7 +97,7 @@ class Game {
     this.caller = player;
 
     for (let i = 0; i < 5; i += 1) {
-      if (_.find(this.players[i].cards, { name: card.name, suit: card.suit })) {
+      if (_.find(this.players[i].cards, { suit: card.suit, rank: { name: card.name } })) {
         this.guiltyPlayer = i;
       }
     }
@@ -136,7 +142,8 @@ class Game {
       point += card.info.point;
     });
 
-    score[largest.player - 1] += point;
+    score[largest.player] += point;
+    this._updateScore(score);
     this.currentRound = [];
     return largest;
   }
