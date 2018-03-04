@@ -9,10 +9,6 @@ export default class IOModule {
     this.sockets = Array(5).fill(null);
   }
 
-  close() {
-    this.io.close();
-  }
-
   resetGame() {
     this.game = new Game();
   }
