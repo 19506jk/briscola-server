@@ -92,7 +92,8 @@ describe('Game', () => {
 
   describe('#setReadyStatus', () => {
     it('should set the player at index to correct ready status', () => {
-
+      game.setReadyStatus(0, true);
+      assert.ok(game.players[0].ready);
     });
   });
 
