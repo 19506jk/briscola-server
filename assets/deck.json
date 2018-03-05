@@ -1,60 +1,242 @@
-{
-  "suits": [
-    "Sun",
-    "Cup",
-    "Feather",
-    "Sword"
-  ],
-  "ranks": [
-    {
-      "name": "Ace",
-      "point": 11,
-      "value": 10
-    },
-    {
-      "name": "Three",
-      "point": 10,
-      "value": 9
-    },
-    {
-      "name": "King",
-      "point": 4,
-      "value": 8
-    },
-    {
-      "name": "Horse",
-      "point": 3,
-      "value": 7
-    },
-    {
-      "name": "Queen",
-      "point": 2,
-      "value": 6
-    },
-    {
-      "name": "Seven",
-      "point": 0,
-      "value": 5
-    },
-    {
-      "name": "Six",
-      "point": 0,
-      "value": 4
-    },
-    {
-      "name": "Five",
-      "point": 0,
-      "value": 3
-    },
-    {
-      "name": "Four",
-      "point": 0,
-      "value": 2
-    },
-    {
-      "name": "Two",
-      "point": 0,
-      "value": 1
-    }
-  ]
-}
+[
+  {
+    "name": "Ace",
+    "point": 11,
+    "value": 10,
+    "suit": "Sun"
+  },
+  {
+    "name": "Three",
+    "point": 10,
+    "value": 9,
+    "suit": "Sun"
+  },
+  {
+    "name": "King",
+    "point": 4,
+    "value": 8,
+    "suit": "Sun"
+  },
+  {
+    "name": "Horse",
+    "point": 3,
+    "value": 7,
+    "suit": "Sun"
+  },
+  {
+    "name": "Queen",
+    "point": 2,
+    "value": 6,
+    "suit": "Sun"
+  },
+  {
+    "name": "Seven",
+    "point": 0,
+    "value": 5,
+    "suit": "Sun"
+  },
+  {
+    "name": "Six",
+    "point": 0,
+    "value": 4,
+    "suit": "Sun"
+  },
+  {
+    "name": "Five",
+    "point": 0,
+    "value": 3,
+    "suit": "Sun"
+  },
+  {
+    "name": "Four",
+    "point": 0,
+    "value": 2,
+    "suit": "Sun"
+  },
+  {
+    "name": "Two",
+    "point": 0,
+    "value": 1,
+    "suit": "Sun"
+  },
+  {
+    "name": "Ace",
+    "point": 11,
+    "value": 10,
+    "suit": "Cup"
+  },
+  {
+    "name": "Three",
+    "point": 10,
+    "value": 9,
+    "suit": "Cup"
+  },
+  {
+    "name": "King",
+    "point": 4,
+    "value": 8,
+    "suit": "Cup"
+  },
+  {
+    "name": "Horse",
+    "point": 3,
+    "value": 7,
+    "suit": "Cup"
+  },
+  {
+    "name": "Queen",
+    "point": 2,
+    "value": 6,
+    "suit": "Cup"
+  },
+  {
+    "name": "Seven",
+    "point": 0,
+    "value": 5,
+    "suit": "Cup"
+  },
+  {
+    "name": "Six",
+    "point": 0,
+    "value": 4,
+    "suit": "Cup"
+  },
+  {
+    "name": "Five",
+    "point": 0,
+    "value": 3,
+    "suit": "Cup"
+  },
+  {
+    "name": "Four",
+    "point": 0,
+    "value": 2,
+    "suit": "Cup"
+  },
+  {
+    "name": "Two",
+    "point": 0,
+    "value": 1,
+    "suit": "Cup"
+  },
+  {
+    "name": "Ace",
+    "point": 11,
+    "value": 10,
+    "suit": "Feather"
+  },
+  {
+    "name": "Three",
+    "point": 10,
+    "value": 9,
+    "suit": "Feather"
+  },
+  {
+    "name": "King",
+    "point": 4,
+    "value": 8,
+    "suit": "Feather"
+  },
+  {
+    "name": "Horse",
+    "point": 3,
+    "value": 7,
+    "suit": "Feather"
+  },
+  {
+    "name": "Queen",
+    "point": 2,
+    "value": 6,
+    "suit": "Feather"
+  },
+  {
+    "name": "Seven",
+    "point": 0,
+    "value": 5,
+    "suit": "Feather"
+  },
+  {
+    "name": "Six",
+    "point": 0,
+    "value": 4,
+    "suit": "Feather"
+  },
+  {
+    "name": "Five",
+    "point": 0,
+    "value": 3,
+    "suit": "Feather"
+  },
+  {
+    "name": "Four",
+    "point": 0,
+    "value": 2,
+    "suit": "Feather"
+  },
+  {
+    "name": "Two",
+    "point": 0,
+    "value": 1,
+    "suit": "Feather"
+  },
+  {
+    "name": "Ace",
+    "point": 11,
+    "value": 10,
+    "suit": "Sword"
+  },
+  {
+    "name": "Three",
+    "point": 10,
+    "value": 9,
+    "suit": "Sword"
+  },
+  {
+    "name": "King",
+    "point": 4,
+    "value": 8,
+    "suit": "Sword"
+  },
+  {
+    "name": "Horse",
+    "point": 3,
+    "value": 7,
+    "suit": "Sword"
+  },
+  {
+    "name": "Queen",
+    "point": 2,
+    "value": 6,
+    "suit": "Sword"
+  },
+  {
+    "name": "Seven",
+    "point": 0,
+    "value": 5,
+    "suit": "Sword"
+  },
+  {
+    "name": "Six",
+    "point": 0,
+    "value": 4,
+    "suit": "Sword"
+  },
+  {
+    "name": "Five",
+    "point": 0,
+    "value": 3,
+    "suit": "Sword"
+  },
+  {
+    "name": "Four",
+    "point": 0,
+    "value": 2,
+    "suit": "Sword"
+  },
+  {
+    "name": "Two",
+    "point": 0,
+    "value": 1,
+    "suit": "Sword"
+  }
+]

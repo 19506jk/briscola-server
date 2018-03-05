@@ -30,13 +30,7 @@ class Game {
   }
 
   init() {
-    const cards = [];
-    deck.suits.forEach((suit) => {
-      deck.ranks.forEach((rank) => {
-        cards.push(_.assign({}, rank, { suit }));
-      });
-    });
-    this.deck = _.shuffle(cards);
+    this.deck = _.shuffle(deck);
 
     this.playerOrder.forEach(() => {
       this.players.push({
