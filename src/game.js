@@ -93,7 +93,7 @@ class Game {
     this.caller = player;
 
     for (let i = 0; i < 5; i += 1) {
-      if (_.find(this.players[i].cards, { suit: card.suit, rank: { name: card.name } })) {
+      if (_.find(this.players[i].cards, { suit: card.suit, name: card.name })) {
         this.guiltyPlayer = i;
       }
     }
@@ -109,14 +109,14 @@ class Game {
   getRoundResult() {
     let largest = this.currentRound.shift();
     let leadingSuit = largest.suit;
-    let point = largest.rank.point;
+    let point = largest.point;
     const score = Array(5).fill(0);
 
     this.currentRound.forEach((card) => {
-      const cardValue = card.rank.value;
+      const cardValue = card.value;
       const cardSuit = card.suit;
       const { trump } = this;
-      const largestValue = largest.rank.value;
+      const largestValue = largest.value;
       const largestTrump = largest.trump;
 
       /**
@@ -135,7 +135,7 @@ class Game {
         largest = card;
         leadingSuit = trump;
       }
-      point += card.rank.point;
+      point += card.point;
     });
 
     score[largest.playerIndex] += point;

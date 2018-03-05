@@ -1,9 +1,13 @@
 import { assert } from 'chai';
+import _ from 'lodash';
 import io from 'socket.io-client';
 import IOModule from '../src/IOModule';
+import Deck from '../assets/deck.json';
 
 const port = 7777;
 const socketURL = `http://localhost:${port}`;
+
+const getCard = (suit, name) => (_.find(Deck, { suit, name }));
 
 describe('IOModule', () => {
   let subject;
@@ -220,35 +224,34 @@ describe('IOModule', () => {
             winner: {
               playerName: 'Player5',
               playerIndex: 4,
-              suit: 'A',
-              rank: {
-                point: 5,
-                value: 11,
-              },
+              suit: 'Sword',
+              name: 'Ace',
+              point: 11,
+              value: 10,
             },
             scores: [0, 0, 0, 0, 15],
           });
           done();
         });
         player1.emit('submitName', 'Player1');
-        player1.emit('setCalledCard', { name: 'Ace', suit: 'A' });
-        player1.emit('playCard', { suit: 'A', rank: { point: 1, value: 1 } });
+        player1.emit('setCalledCard', getCard('Sword', 'Three'));
+        player1.emit('playCard', getCard('Cup', 'Two'));
       });
       player2.on('connect', () => {
         player2.emit('submitName', 'Player2');
-        player2.emit('playCard', { suit: 'C', rank: { point: 2, value: 5 } });
+        player2.emit('playCard', getCard('Sun', 'Six'));
       });
       player3.on('connect', () => {
         player3.emit('submitName', 'Player3');
-        player3.emit('playCard', { suit: 'C', rank: { point: 3, value: 7 } });
+        player3.emit('playCard', getCard('Cup', 'King'));
       });
       player4.on('connect', () => {
         player4.emit('submitName', 'Player4');
-        player4.emit('playCard', { suit: 'A', rank: { point: 4, value: 10 } });
+        player4.emit('playCard', getCard('Feather', 'Two'));
       });
       player5.on('connect', () => {
         player5.emit('submitName', 'Player5');
-        player5.emit('playCard', { suit: 'A', rank: { point: 5, value: 11 } });
+        player5.emit('playCard', getCard('Sword', 'Ace'));
       });
     });
 
@@ -257,11 +260,11 @@ describe('IOModule', () => {
 
       player1.on('connect', () => {
         // Guilty player
-        const card = { suit: 'A', rank: { point: 1, value: 1, name: 'A' } };
+        const card = getCard('Feather', 'Two');
         player1.on('finalResult', (data) => {
           assert.deepEqual(data, {
-            guiltyPoints: 0,
-            nonGuiltyPoints: 15,
+            guiltyPoints: 14,
+            nonGuiltyPoints: 0,
             bid: 10,
           });
           done();
@@ -273,29 +276,29 @@ describe('IOModule', () => {
       });
       player2.on('connect', () => {
         // Caller
-        const card = { suit: 'C', rank: { point: 2, value: 5, name: 'B' } };
+        const card = getCard('Sun', 'Two');
         subject.game.players[1].cards = [card];
         player2.emit('submitName', 'Player2');
         player2.emit('bid', { passed: false, points: 10 });
-        player2.emit('setCalledCard', { name: 'A', suit: 'A' });
+        player2.emit('setCalledCard', getCard('Sun', 'Three'));
         player2.emit('playCard', card);
       });
       player3.on('connect', () => {
-        const card = { suit: 'C', rank: { point: 3, value: 7, name: 'C' } };
+        const card = getCard('Feather', 'King');
         subject.game.players[2].cards = [card];
         player3.emit('submitName', 'Player3');
         player3.emit('playCard', card);
         player3.emit('bid', { passed: true });
       });
       player4.on('connect', () => {
-        const card = { suit: 'A', rank: { point: 4, value: 10, name: 'Z' } };
+        const card = getCard('Cup', 'Three');
         subject.game.players[3].cards = [card];
         player4.emit('submitName', 'Player4');
         player4.emit('playCard', card);
         player4.emit('bid', { passed: true });
       });
       player5.on('connect', () => {
-        const card = { suit: 'A', rank: { point: 5, value: 11, name: 'D' } };
+        const card = getCard('Cup', 'Five');
         subject.game.players[4].cards = [card];
         player5.emit('submitName', 'Player5');
         player5.emit('playCard', card);
