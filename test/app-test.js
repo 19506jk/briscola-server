@@ -1,5 +1,6 @@
 import http from 'http';
 import assert from 'assert';
+import io from 'socket.io-client';
 
 import '../src/app';
 
@@ -31,6 +32,17 @@ describe('Briscola Server App', () => {
             assert.equal(JSON.parse(body).length, 40, 'response should contain 40 cards');
             done();
           });
+        });
+      });
+    });
+
+    describe('socketIO', () => {
+      it('should connect socket successfully', (done) => {
+        const client = io.connect(`http://localhost:7777`, { forceNew: true });
+        client.on('connect', () => {
+          assert.ok(true, 'connection is successful');
+          client.disconnect();
+          done();
         });
       });
     });

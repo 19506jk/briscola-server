@@ -4,7 +4,7 @@ import { config } from '../package.json';
 import deck from '../assets/deck.json';
 
 const app = Express();
-const socketIO = new IOModule();
+const socketIO = new IOModule(config.serverSocketPort);
 
 // eslint-disable-next-line no-console
 app.listen(config.serverPort, () => console.log('server listening on port 8080'));
@@ -22,6 +22,6 @@ app.get('/api/deck', (req, res) => {
   res.json(deck);
 });
 
-socketIO.launch(config.serverPort);
+socketIO.launch();
 
 export default socketIO;
