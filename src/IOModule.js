@@ -10,6 +10,7 @@ export default class IOModule {
   }
 
   resetGame() {
+    this.io.emit('resetGame', 'A new game is starting');
     this.game = new Game();
   }
 
@@ -37,6 +38,7 @@ export default class IOModule {
       socket.on('disconnect', () => {
         if (index) {
           this.game.removePlayer(index);
+          this.sockets[index] = null;
         }
 
         if (_.isNil(playerName)) {

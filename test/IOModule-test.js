@@ -61,6 +61,7 @@ describe('IOModule', () => {
       player2.on('connect', () => {
         player2.on('playerExit', (data) => {
           assert.equal(data, 'Foo has left the game');
+          assert.isNull(subject.sockets[1], 'socket is set to null');
           done();
         });
       });
