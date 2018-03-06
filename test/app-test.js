@@ -30,7 +30,7 @@ describe('Briscola Server App', () => {
           res.on('data', (body) => {
             assert.equal(JSON.parse(body).length, 40, 'response should contain 40 cards');
             done();
-          })
+          });
         });
       });
     });
