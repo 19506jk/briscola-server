@@ -4,7 +4,7 @@
   "private": true,
   "config": {
     "serverPort": 8080,
-    "serverSocketPort": 7777
+    "serverSocketPort": 8081
   },
   "scripts": {
     "start": "./node_modules/.bin/nodemon ./src/app.js --exec babel-node",

@@ -1,10 +1,11 @@
 import http from 'http';
 import assert from 'assert';
 import io from 'socket.io-client';
+import { config } from '../package.json';
 
 import '../src/app';
 
-const URL = 'http://localhost:8080';
+const URL = `http://localhost:${config.serverPort}`;
 
 describe('Briscola Server App', () => {
   it('should return 200', (done) => {
@@ -15,11 +16,13 @@ describe('Briscola Server App', () => {
   });
 
   describe('/api', () => {
-    describe('/reset', () => {
-      it('should return 200', (done) => {
-        http.get(`${URL}/api/reset`, (res) => {
-          assert.equal(res.statusCode, 200);
-          done();
+    describe('/debug', () => {
+      describe('/reset', () => {
+        it('should return 200', (done) => {
+          http.get(`${URL}/api/debug/reset`, (res) => {
+            assert.equal(res.statusCode, 200);
+            done();
+          });
         });
       });
     });
@@ -38,7 +41,7 @@ describe('Briscola Server App', () => {
 
     describe('socketIO', () => {
       it('should connect socket successfully', (done) => {
-        const client = io.connect(`http://localhost:7777`, { forceNew: true });
+        const client = io.connect(`http://localhost:${config.serverSocketPort}`, { forceNew: true });
         client.on('connect', () => {
           assert.ok(true, 'connection is successful');
           client.disconnect();

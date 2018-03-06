@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
   res.send('Briscola server is running!');
 });
 
-app.get('/api/reset', (req, res) => {
+app.get('/api/debug/reset', (req, res) => {
   socketIO.resetGame();
   res.send('A new game is starting');
 });
